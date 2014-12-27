@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+import settings
 
 # Create your views here.
 def home(request):
-    value = request.GET.get('value', '')
-    return HttpResponse('<html><body><p>' + value + '</p></body></html>');
+    return render(request, 'games/index.html', {})
