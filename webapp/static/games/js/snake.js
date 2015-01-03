@@ -14,28 +14,40 @@ var Block = function (x, y) {
     });
 }
 
-var Snake = {
-    listOfBlocks: ko.observableArray([]),
-    directionOfMovement: DIRECTION_DOWN,
-    interval: undefined,
+var Snake = function () {
+    this.listOfBlocks = ko.observableArray([]);
+    this.directionOfMovement = DIRECTION_DOWN;
+    this.interval = undefined;
+}
 
+Snake.prototype = {
     initialize: function() {
         var self = this;
         this.put(0,0);
         this.put(0,1);
         this.put(0,2);
+        this.put(0,3);
+        this.put(0,4);
+        this.put(0,5);
+        this.put(0,6);
+        this.put(0,7);
+        this.put(0,8);
+        this.put(0,9);
+        this.put(0,10);
         this.interval = setInterval(function() {
             self.move();
-        }, 100);
+        }, 200);
     },
 
     put: function(x, y) {
-        block = new Block(x, y);
+        var block = new Block(x, y);
         this.listOfBlocks.push(block);
+        Field.setOccupied(x, y);
     },
 
     pop: function() {
-        this.listOfBlocks.splice(0,1);
+        var block = this.listOfBlocks.splice(0,1)[0];
+        Field.setEmpty(block.x(), block.y());
     },
 
     head: function() {
@@ -44,29 +56,64 @@ var Snake = {
 
     moveLeft: function() {
         this.pop();
-        headBlock = this.head();
+        var headBlock = this.head();
         this.put((GRIDSIZE + (headBlock.x() - 1)) % GRIDSIZE,headBlock.y());
     },
 
     moveRight: function() {
         this.pop();
-        headBlock = this.head();
+        var headBlock = this.head();
         this.put((headBlock.x() + 1) % GRIDSIZE,headBlock.y());
     },
 
     moveUp: function() {
         this.pop();
-        headBlock = this.head();
+        var headBlock = this.head();
         this.put(headBlock.x(),(GRIDSIZE + (headBlock.y() - 1)) % GRIDSIZE);
     },
 
     moveDown: function() {
         this.pop();
-        headBlock = this.head();
+        var headBlock = this.head();
         this.put(headBlock.x(),(headBlock.y() + 1) % GRIDSIZE);
     },
 
+    isClashing: function() {
+        var headBlock = this.head();
+        if(this.directionOfMovement == DIRECTION_LEFT) {
+            return Field.isOccupied((GRIDSIZE + (headBlock.x() - 1)) % GRIDSIZE,headBlock.y());
+        } else if(this.directionOfMovement == DIRECTION_RIGHT) {
+            return Field.isOccupied((headBlock.x() + 1) % GRIDSIZE,headBlock.y());
+        } else if(this.directionOfMovement == DIRECTION_DOWN) {
+            return Field.isOccupied(headBlock.x(),(headBlock.y() + 1) % GRIDSIZE);
+        } else if(this.directionOfMovement == DIRECTION_UP) {
+            return Field.isOccupied(headBlock.x(),(GRIDSIZE + (headBlock.y() - 1)) % GRIDSIZE);
+        }
+    },
+
+    changeDirectionAfterClash: function() {
+        var tail = this.listOfBlocks()[0];
+        var subTail = this.listOfBlocks()[1];
+        if(tail.x() == subTail.x()) {
+            if(tail.y() == (GRIDSIZE - subTail.y() + 1) % GRIDSIZE) {
+                this.directionOfMovement = DIRECTION_DOWN;
+            } else {
+                this.directionOfMovement = DIRECTION_UP;
+            }
+        } else if(tail.y() == subTail.y()) {
+            if(tail.x() > subTail.x()) {
+                this.directionOfMovement = DIRECTION_RIGHT;
+            } else {
+                this.directionOfMovement = DIRECTION_LEFT;
+            }
+        }
+    },
+
     move: function() {
+        if (this.isClashing()) {
+            this.changeDirectionAfterClash();
+            this.listOfBlocks.reverse();
+        }
         if(this.directionOfMovement == DIRECTION_LEFT) this.moveLeft();
         if(this.directionOfMovement == DIRECTION_RIGHT) this.moveRight();
         if(this.directionOfMovement == DIRECTION_DOWN) this.moveDown();
@@ -86,12 +133,47 @@ var Snake = {
     }
 }
 
+var Field = {
+    blocks: new Array(GRIDSIZE * GRIDSIZE),
+    snake: new Snake(),
+    staticWall: [],
+
+    setOccupied: function (x,y) {
+        Field.blocks[x * GRIDSIZE + y] = 1;
+    },
+
+    setEmpty: function (x,y) {
+        Field.blocks[x * GRIDSIZE + y] = 0;
+    },
+
+    isOccupied: function (x, y) {
+        return (Field.blocks[x * GRIDSIZE + y] === 1);
+    },
+
+    initialize: function () {
+        Field.staticWall.push(new Block(10,5));
+        Field.staticWall.push(new Block(10,6));
+        Field.staticWall.push(new Block(10,7));
+        Field.staticWall.push(new Block(10,8));
+        Field.staticWall.push(new Block(10,9));
+        Field.staticWall.push(new Block(10,10));
+        Field.setOccupied(10, 5);
+        Field.setOccupied(10, 6);
+        Field.setOccupied(10, 7);
+        Field.setOccupied(10, 8);
+        Field.setOccupied(10, 9);
+        Field.setOccupied(10, 10);
+        
+        Field.snake.initialize();
+    }
+}
+
 $(document).ready(function() {
-    Snake.initialize();
-    ko.applyBindings(Snake);
+    Field.initialize();
+    ko.applyBindings(Field);
 
     $(document).keydown(function(event) {
         var key = event.keyCode;
-        Snake.changeDirection(key);
+        Field.snake.changeDirection(key);
     });
 });
