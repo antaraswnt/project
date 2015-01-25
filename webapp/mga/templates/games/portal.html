@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript">
+            var CSRF_TOKEN = "{{ csrf_token }}";
+        </script>
+        <script src="/static/common/lib/jquery-1.11.0.js"></script>
+        <script src="/static/common/lib/knockout-3.1.0.js"></script>
+        <script src="/static/common/lib/cookies.js"></script>
+        <script src="/static/common/lib/socket.io-1.1.0.js"></script>
+        <script src="/static/platform/js/socket-wrapper.js"></script>
+        <script src="/static/platform/js/portal.js"></script>
+    </head>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+    </style>
+    <body>
+        <iframe id='portalframe' src="http://localhost:8000/games/gamed/"></iframe>
+    </body>
+</html>
