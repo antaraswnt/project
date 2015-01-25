@@ -12,6 +12,7 @@ var Display = {
         } else {
             attachEvent("onmessage", Display.processMessageFromPortal);
         }
+        Display._sendData({'type': 'message', 'data': { 'type': 'initialize' }, 'client': null});
     },
     registerForClientListChange: function(f) {
         Display.callbacks.clientListChange = f;
@@ -62,7 +63,9 @@ var Display = {
                 break;
             case 'listchange':
                 clients = data.data;
-                Display.callbacks.clientListChange();
+                if (typeof(Display.callbacks.clientListChange) == 'function') {
+                    Display.callbacks.clientListChange();
+                }
                 break;
             case 'message':
                 if (typeof(Display.callbacks.customMessage) == 'function') {

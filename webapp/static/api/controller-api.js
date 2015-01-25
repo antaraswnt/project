@@ -63,7 +63,9 @@ var Client = {
                 break;
             case 'listchange':
                 Client.clients = data.data;
-                Client.callbacks.clientListChange();
+                if (typeof(Client.callbacks.clientListChange) == 'function') {
+                    Client.callbacks.clientListChange();
+                }
                 break;
             case 'message':
                 if (typeof(Client.callbacks.customMessage) == 'function') {

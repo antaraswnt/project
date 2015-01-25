@@ -20,20 +20,29 @@ var Portal = {
     ready: false,
 
     clientList: ko.observable(undefined),
-    url: ko.observable('http://www.ee.iitb.ac.in/'),
 
+    defaultGame: undefined,
+    game: ko.observable(undefined),
+    
     register: function() {
         var uuid = Cookies.get('uuid');
         $.post('/devices/register/', {'csrfmiddlewaretoken': CSRF_TOKEN, 'uuid': uuid, 'type': 'Display'}, function(response) {
             var response = JSON.parse(response);
             if (response.success) {
+                Portal.game(response.game);
+                Portal.defaultGame = response.game;
                 var device = response.device;
                 Portal.relay = device.relay.host + ':' + device.relay.port;
                 Portal.code = device.code;
                 Portal.uuid = device.uuid;
                 Cookies.set('uuid', Portal.uuid);
                 Portal.initialize();
+                ViewModel.registerSuccess(Portal.code);
+            } else {
+                ViewModel.registerError(response.error);
             }
+        }).fail(function() {
+            ViewModel.registerError('Cannot connect to server.');
         });
     },
 
@@ -44,7 +53,11 @@ var Portal = {
         Portal.clientList.subscribe(function() {
             Portal._sendMessageToFrontend({'type': 'listchange', 'data': Portal.clientList()});
         });
-    
+
+        Portal.game.subscribe(function() {
+            ViewModel.url(Portal.game().display_url);
+            Portal.sendOpenPageMessage({'url': Portal.game().controller_url}, 'all');
+        });
     },
 
     sendMessageToClient: function (data, client) {
@@ -103,6 +116,12 @@ var Portal = {
             case 'message':
                 if(data.client == null) {
                     // Portal message yet to be handled
+                    var msg = data.data;
+                    switch(msg.type) {
+                        case 'initialize':
+                            Portal._sendMessageToFrontend({'type': 'listchange', 'data': Portal.clientList()});
+                            break;
+                    }
                 } else {
                     Portal.sendMessageToClient(data.data, data.client);
                 }
@@ -119,14 +138,14 @@ var Portal = {
             case MessageTypes.CLIENTLIST:
                 Portal.clients = data.data;
                 Portal._updateClientList();
-                Portal.sendOpenPageMessage({'url': Portal.url()}, 'all');
+                Portal.sendOpenPageMessage({'url': Portal.game().controller_url}, 'all');
                 break;
             case MessageTypes.CLIENTCONNECT:
                 var uuid = data.data.uuid;
                 Portal.clients[uuid] = data.data;
                 Portal._updateClientList();
                 Portal._raiseClientConnectEvent(data.data);
-                Portal.sendOpenPageMessage({'url': Portal.url()}, uuid);
+                Portal.sendOpenPageMessage({'url': Portal.game().controller_url}, uuid);
                 break;
             case MessageTypes.CLIENTDISCONNECT:
                 var uuid = data.data.uuid;
@@ -151,16 +170,52 @@ var Portal = {
         if (type == 'connect') {
             Portal.ready = true;
             Portal._updateClients();
+            ViewModel.isLoading(false);
+            ViewModel.url(Portal.game().display_url);
         } else if(type == 'disconnect') {
             Portal.ready = false;
+            ViewModel.isLoading(true);
         } else if(type == 'ondata') {
             Portal._processMessageFromRelay(data);
+        } else if(type == 'connection_failed') {
+            ViewModel.connectFailure();
         }
     },
 };
 
+var ViewModel = {
+    server: ko.observable('192.168.2.101:8000'),
+    code: ko.observable(''),
+    isRegistered: ko.observable(false),
+    isLoading: ko.observable(false),
+    errorMessage: ko.observable(''),
+    url: ko.observable(undefined),
+    
+    register: function() {
+        ViewModel.isLoading(true);
+        ViewModel.errorMessage('');
+        Portal.register();
+    },
+
+    registerSuccess: function(code) {
+        ViewModel.isRegistered(true);
+        ViewModel.code(code);
+    },
+
+    registerError: function(error) {
+        ViewModel.isLoading(false);
+        ViewModel.errorMessage(error);
+    },
+
+    connectFailure: function() {
+        ViewModel.isLoading(false);
+        ViewModel.isRegistered(false);
+        ViewModel.errorMessage('Connection to relay failed.');
+    }
+}
+
 $(document).ready(function() {
-    Portal.register();
+    ViewModel.register();
 
     if (window.addEventListener) {
         addEventListener("message", Portal.processMessageFromFrontend, false);
@@ -168,5 +223,5 @@ $(document).ready(function() {
         attachEvent("onmessage", Portal.processMessageFromFrontend);
     }
 
-    ko.applyBindings(Portal);
+    ko.applyBindings(ViewModel);
 });
