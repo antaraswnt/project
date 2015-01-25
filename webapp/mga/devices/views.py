@@ -24,9 +24,8 @@ def register_device(request):
                 try:
                     device = Device.objects.get(uuid=device_uuid)
                 except:
-                    pass
+                    device = Device()
 
-            device = Device()
             device.code = device_code
             device.relay = display.relay
             device.save()
@@ -37,9 +36,8 @@ def register_device(request):
                 try:
                     device = Device.objects.get(uuid=device_uuid)
                 except:
-                    pass
+                    device = Device()
       
-            device = Device()
             device.device_type = 'Display'
             device.device_code = 'abc' # Assign a random code
             device.relay = Relay.objects.all()[0] # Assign a random relay
