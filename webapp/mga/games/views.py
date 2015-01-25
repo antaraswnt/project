@@ -38,9 +38,11 @@ def logout_view(request):
     return render(request, 'games/logout.html', {})
 
 @never_cache
-def chat_display(request):
-    return render(request, 'chat/chatd.html', {})
+def game_display(request, game_slug):
+    game_template = '%s/%s-display.html' % (game_slug, game_slug)
+    return render(request, game_template, {})
 
 @never_cache
-def chat_controller(request):
-    return render(request, 'chat/chatc.html', {})
+def game_controller(request, game_slug):
+    game_template = '%s/%s-controller.html' % (game_slug, game_slug)
+    return render(request, game_template, {})

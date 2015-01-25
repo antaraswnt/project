@@ -47,7 +47,7 @@ def register_device(request):
             device.relay = Relay.objects.all()[0] # Assign a random relay
             device.save()
 
-            game = { 'controller_url': 'http://192.168.2.101:8000/games/chat-controller/', 'display_url': 'http://192.168.2.101:8000/games/chat-display/' }
+            game = { 'controller_url': 'http://192.168.2.101:8000/games/chat/controller/', 'display_url': 'http://192.168.2.101:8000/games/chat/display/' }
             return HttpResponse(json.dumps({'success': True, 'device': device.get_json(), 'game': game}))
 
     return HttpResponse(json.dumps({'success': True}))
