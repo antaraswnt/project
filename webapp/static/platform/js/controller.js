@@ -22,11 +22,10 @@ var Controller = {
     clientList: ko.observable(undefined),
     url: ko.observable(undefined),
 
-    register: function(code) {
+    register: function(code, callback) {
         Controller.code = code;
         var uuid = Cookies.get('uuid');
         $.post('/devices/register/', {'csrfmiddlewaretoken': CSRF_TOKEN, 'code': code, 'uuid': uuid, 'type': 'Controller'}, function(response) {
-            console.log(response);
             var response = JSON.parse(response);
             if (response.success) {
                 var device = response.device;
@@ -34,6 +33,9 @@ var Controller = {
                 Controller.uuid = device.uuid;
                 Cookies.set('uuid', Controller.uuid);
                 Controller.initialize();
+                callback(true, null);
+            } else {
+                callback(false, response.error);
             }
         });
     },
@@ -74,7 +76,8 @@ var Controller = {
     },
 
     _raiseClientMessageEvent: function(data) {
-        Controller._sendMessageToFrontend({'type': 'message', 'data': data.data, 'from': data.from});
+        var clientid = Controller.clients[data.from].information.id;
+        Controller._sendMessageToFrontend({'type': 'message', 'data': data.data, 'from': clientid});
     },
 
     _updateClientList: function(data) {
@@ -89,8 +92,8 @@ var Controller = {
     },
 
     _sendMessageToFrontend: function(data) {
-        var portalframe = document.getElementById("portalframe").contentWindow;
-        portalframe.postMessage(data,'*');
+        var controllerframe = document.getElementById("controllerframe").contentWindow;
+        controllerframe.postMessage(data,'*');
     },
 
     processMessageFromFrontend: function(event) {
@@ -159,8 +162,29 @@ var Controller = {
     },
 };
 
+var ControllerView = {
+    code: ko.observable(''),
+    isRegistered: ko.observable(false),
+    isLoading: ko.observable(false),
+    errorMsg: ko.observable(''),
+
+    register: function() {
+        ControllerView.isLoading(true);
+        ControllerView.errorMsg('');
+        Controller.register(ControllerView.code(), ControllerView.registerCallback);
+    },
+
+    registerCallback: function(success, errormsg) {
+        ControllerView.isLoading(false);
+        if (success) {
+            ControllerView.isRegistered(true);
+        } else {
+            ControllerView.errorMsg(errormsg);
+        }
+    }
+}
+
 $(document).ready(function() {
-    Controller.register('abc');
 
     if (window.addEventListener) {
         addEventListener("message", Controller.processMessageFromFrontend, false);
@@ -168,5 +192,5 @@ $(document).ready(function() {
         attachEvent("onmessage", Controller.processMessageFromFrontend);
     }
 
-    ko.applyBindings(Controller);
+    ko.applyBindings(ControllerView);
 });

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/static/common/lib/jquery-1.11.0.js"></script>
+        <script src="/static/common/lib/knockout-3.1.0.js"></script>
+        <script src="/static/api/display-api.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            Display.initialize();
+            Display.registerForClientConnect(function(data) {
+                ChatModel.messages.push(data.name + ' connected');
+            });
+            Display.registerForClientDisconnect(function(data) {
+                ChatModel.messages.push(data.name + ' disconnected');
+            });
+            Display.registerForCustomMessage(function(data, client) {
+                ChatModel.messages.push(client + ' says: ' + data);
+            });
+
+            var ChatModel = {
+                messages: ko.observableArray([])
+            }
+            ko.applyBindings(ChatModel);
+        });
+        </script>
+    </head>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        .message {
+            margin: 2px;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 10px;
+            background: #e8f792;
+        }
+    </style>
+    <body>
+        <div data-bind="foreach: messages">
+            <p class="message" data-bind="text: $data"></p>
+        </div>
+    </body>
+</html>

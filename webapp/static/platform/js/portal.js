@@ -12,7 +12,7 @@ var Portal = {
     code: undefined,
     extra: {
         'isPortal': true,
-        'information' : { 'id': 'portal' },
+        'information' : { 'id': 'portal', 'name': 'Portal' },
     },
     
     socket: undefined,
@@ -25,7 +25,6 @@ var Portal = {
     register: function() {
         var uuid = Cookies.get('uuid');
         $.post('/devices/register/', {'csrfmiddlewaretoken': CSRF_TOKEN, 'uuid': uuid, 'type': 'Display'}, function(response) {
-            console.log(response);
             var response = JSON.parse(response);
             if (response.success) {
                 var device = response.device;
@@ -79,7 +78,8 @@ var Portal = {
     },
 
     _raiseClientMessageEvent: function(data) {
-        Portal._sendMessageToFrontend({'type': 'message', 'data': data.data, 'from': data.from});
+        var clientid = Portal.clients[data.from].information.id;
+        Portal._sendMessageToFrontend({'type': 'message', 'data': data.data, 'from': clientid});
     },
 
     _updateClientList: function(data) {

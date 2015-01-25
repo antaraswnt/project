@@ -36,3 +36,11 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return render(request, 'games/logout.html', {})
+
+@never_cache
+def chat_display(request):
+    return render(request, 'chat/chatd.html', {})
+
+@never_cache
+def chat_controller(request):
+    return render(request, 'chat/chatc.html', {})

@@ -4,6 +4,7 @@ var Display = {
         customMessage: undefined,
         clientConnect: undefined,
         clientDisconnect: undefined,
+        clientListChange: undefined,
     },
     initialize: function() {
         if (window.addEventListener) {
@@ -11,6 +12,9 @@ var Display = {
         } else {
             attachEvent("onmessage", Display.processMessageFromPortal);
         }
+    },
+    registerForClientListChange: function(f) {
+        Display.callbacks.clientListChange = f;
     },
     registerForCustomMessage: function(f) {
         Display.callbacks.customMessage = f;
@@ -58,10 +62,11 @@ var Display = {
                 break;
             case 'listchange':
                 clients = data.data;
+                Display.callbacks.clientListChange();
                 break;
             case 'message':
                 if (typeof(Display.callbacks.customMessage) == 'function') {
-                    Display.callbacks.customMessage(data.data);
+                    Display.callbacks.customMessage(data.data, data.from);
                 }
                 break;
         }

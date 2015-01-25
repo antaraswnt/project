@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <head>
         <script type="text/javascript">
             var CSRF_TOKEN = "{{ csrf_token }}";
@@ -26,8 +27,34 @@
             margin: 0;
             border: none;
         }
+        #loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(22, 22, 22, 22);
+        }
+        #code {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            vertical-align: center;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
     </style>
     <body>
-        <iframe id='portalframe' src="http://192.168.2.101:8000/games/gamec/"></iframe>
+        <div id="loader" data-bind="visible: isLoading">
+        </div>
+        <div id="code" data-bind="visible: !isRegistered()">
+            <form>
+                <input type="text" maxlength="3" data-bind="value: code" />
+                <input type="button" value="Connect" data-bind="click: register"/>
+                <p data-bind="visible: errorMsg().length != 0, text: errorMsg"></p>
+            </form>
+        </div>
+        <iframe data-bind="visible: isRegistered()" id="controllerframe" src="http://192.168.2.101:8000/games/chat-controller/"></iframe>
     </body>
 </html>
