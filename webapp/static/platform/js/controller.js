@@ -20,9 +20,8 @@ var Controller = {
     ready: false,
 
     clientList: ko.observable(undefined),
-    url: ko.observable(undefined),
-
-    register: function(code, callback) {
+    
+    register: function(code) {
         Controller.code = code;
         var uuid = Cookies.get('uuid');
         $.post('/devices/register/', {'csrfmiddlewaretoken': CSRF_TOKEN, 'code': code, 'uuid': uuid, 'type': 'Controller'}, function(response) {
@@ -33,10 +32,12 @@ var Controller = {
                 Controller.uuid = device.uuid;
                 Cookies.set('uuid', Controller.uuid);
                 Controller.initialize();
-                callback(true, null);
+                ViewModel.registerSuccess();
             } else {
-                callback(false, response.error);
+                ViewModel.registerError(response.error);
             }
+        }).fail(function() {
+            ViewModel.registerError('Cannot connect to server.');
         });
     },
 
@@ -45,6 +46,11 @@ var Controller = {
         Controller.socket.initialize(Controller._relayCallback);
 
         Controller.clientList.subscribe(function() {
+            if(Controller.clientList()['portal'] == undefined) {
+                ViewModel.isLoading(true);
+            } else {
+                ViewModel.isLoading(false);
+            }
             Controller._sendMessageToFrontend({'type': 'listchange', 'data': Controller.clientList()});
         });
     },
@@ -88,7 +94,6 @@ var Controller = {
             clientList[id].uuid = Controller.clients[key].uuid;
         }
         Controller.clientList(clientList);
-        console.log(Controller.clients);
     },
 
     _sendMessageToFrontend: function(data) {
@@ -102,6 +107,12 @@ var Controller = {
             case 'message':
                 if(data.client == null) {
                     // Controller message yet to be handled
+                    var msg = data.data;
+                    switch(msg.type) {
+                        case 'initialize':
+                            Controller._sendMessageToFrontend({'type': 'listchange', 'data': Controller.clientList()});
+                            break;
+                    }
                 } else {
                     Controller.sendMessageToClient(data.data, data.client);
                 }
@@ -132,12 +143,9 @@ var Controller = {
                 Controller._raiseClientDisconnectEvent(data.data);
                 break;
             case MessageTypes.OPENPAGE:
-                console.log('Openpage: ');
-                console.log(data);
+                ViewModel.url(data.data.url);
                 break;
             case MessageTypes.CUSTOMMESSAGE:
-                console.log('Message from client: ' + data.from);
-                console.log(data);
                 Controller._raiseClientMessageEvent(data);
                 break;
         }
@@ -156,31 +164,41 @@ var Controller = {
             Controller._updateClients();
         } else if(type == 'disconnect') {
             Controller.ready = false;
+            ViewModel.isLoading(true);
         } else if(type == 'ondata') {
             Controller._processMessageFromRelay(data);
+        } else if(type == 'connection_failed') {
+            ViewModel.connectFailure();
         }
     },
 };
 
-var ControllerView = {
+var ViewModel = {
     code: ko.observable(''),
     isRegistered: ko.observable(false),
     isLoading: ko.observable(false),
-    errorMsg: ko.observable(''),
-
+    errorMessage: ko.observable(''),
+    url: ko.observable(undefined),
+    
     register: function() {
-        ControllerView.isLoading(true);
-        ControllerView.errorMsg('');
-        Controller.register(ControllerView.code(), ControllerView.registerCallback);
+        ViewModel.isLoading(true);
+        ViewModel.errorMessage('');
+        Controller.register(ViewModel.code());
     },
 
-    registerCallback: function(success, errormsg) {
-        ControllerView.isLoading(false);
-        if (success) {
-            ControllerView.isRegistered(true);
-        } else {
-            ControllerView.errorMsg(errormsg);
-        }
+    registerSuccess: function() {
+        ViewModel.isRegistered(true);
+    },
+
+    registerError: function(error) {
+        ViewModel.isLoading(false);
+        ViewModel.errorMessage(error);
+    },
+
+    connectFailure: function() {
+        ViewModel.isLoading(false);
+        ViewModel.isRegistered(false);
+        ViewModel.errorMessage('Connection to relay failed.');
     }
 }
 
@@ -192,5 +210,5 @@ $(document).ready(function() {
         attachEvent("onmessage", Controller.processMessageFromFrontend);
     }
 
-    ko.applyBindings(ControllerView);
+    ko.applyBindings(ViewModel);
 });

@@ -11,7 +11,7 @@ SocketWrapper.prototype = {
     initialize: function(callback) {
         var _this = this;
 
-        this.socket = io.connect(this.address, { query: 'connectcode='+_this.connectcode+'&uuid='+_this.uuid+'&extra='+_this.extra });
+        this.socket = io.connect(this.address, { query: 'connectcode='+_this.connectcode+'&uuid='+_this.uuid+'&extra='+_this.extra, reconnectionAttempts: 8, 'force new connection': true });
         this.socket.on('connect', function (data) {
             console.log('Connected to the relay.');
             callback('connect');
@@ -23,6 +23,10 @@ SocketWrapper.prototype = {
 
         this.socket.on('disconnect', function (data) {
             callback('disconnect');
+        });
+
+        this.socket.on('reconnect_failed', function (data) {
+            callback('connection_failed');
         });
     },
 

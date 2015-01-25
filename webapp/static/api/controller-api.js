@@ -12,6 +12,7 @@ var Client = {
         } else {
             attachEvent("onmessage", Client.processMessageFromPortal);
         }
+        Client._sendData({'type': 'message', 'data': { 'type': 'initialize' }, 'client': null});
     },
     registerForClientListChange: function(f) {
         Client.callbacks.clientListChange = f;

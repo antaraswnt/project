@@ -52,9 +52,9 @@
             <form>
                 <input type="text" maxlength="3" data-bind="value: code" />
                 <input type="button" value="Connect" data-bind="click: register"/>
-                <p data-bind="visible: errorMsg().length != 0, text: errorMsg"></p>
+                <p data-bind="visible: errorMessage().length != 0, text: errorMessage"></p>
             </form>
         </div>
-        <iframe data-bind="visible: isRegistered()" id="controllerframe" src="http://192.168.2.101:8000/games/chat-controller/"></iframe>
+        <iframe data-bind="visible: isRegistered(), attr: { src: url }" id="controllerframe"></iframe>
     </body>
 </html>
