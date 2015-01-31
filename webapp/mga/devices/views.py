@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from games.models import *
 from models import *
 import json
 
@@ -34,20 +35,22 @@ def register_device(request):
             return HttpResponse(json.dumps({'success': True, 'device': device.get_json()}))
         
         elif device_type == 'Display':
+            create_device = True
             if device_uuid:
                 try:
                     device = Device.objects.get(uuid=device_uuid)
+                    create_device = False
                 except:
-                    device = Device()
-            else:
-                device = Device()
-      
-            device.device_type = 'Display'
-            device.device_code = 'abc' # Assign a random code
-            device.relay = Relay.objects.all()[0] # Assign a random relay
-            device.save()
+                    pass
 
-            game = { 'controller_url': 'http://192.168.2.101:8000/games/chat/controller/', 'display_url': 'http://192.168.2.101:8000/games/chat/display/' }
-            return HttpResponse(json.dumps({'success': True, 'device': device.get_json(), 'game': game}))
+            if create_device:
+                device = Device()
+                device.device_type = 'Display'
+                device.device_code = 'abc' # Assign a random code
+                device.relay = Relay.objects.all()[0] # Assign a random relay
+                device.save()
+
+            game = Game.objects.get(slug='main')
+            return HttpResponse(json.dumps({'success': True, 'device': device.get_json(), 'game': game.get_json()}))
 
     return HttpResponse(json.dumps({'success': True}))

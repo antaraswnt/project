@@ -10,3 +10,12 @@ class Game(models.Model):
 
     def __unicode__(self):
         return u'%s' % (self.title)
+
+    def get_json(self):
+        json = {
+            'title' : self.title,
+            'slug' : self.slug,
+            'display_url' : self.display_url,
+            'controller_url' : self.control_url,
+        }
+        return json

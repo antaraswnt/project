@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <head>
+        <link rel="stylesheet" type="text/css" href="/static/platform/css/portal.css" />
         <script type="text/javascript">
             var CSRF_TOKEN = "{{ csrf_token }}";
         </script>
@@ -11,35 +15,6 @@
         <script src="/static/platform/js/socket-wrapper.js"></script>
         <script src="/static/platform/js/portal.js"></script>
     </head>
-    <style>
-        body {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-            border: none;
-        }
-        #code-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: rgb(0, 0, 200);
-        }
-        #loader {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(22, 22, 22, 22);
-        }
-    </style>
     <body>
         <div id="code-container">
             <p data-bind="text: server"></p>

@@ -1,53 +1,16 @@
 <!DOCTYPE html>
 <html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <head>
-        <style>
-            #loader {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(22, 22, 22, 22);
-            }
-        </style>
-        <script src="/static/common/lib/jquery-1.11.0.js"></script>
-        <script src="/static/common/lib/knockout-3.1.0.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/platform/css/login.css" />
         <script type="text/javascript">
             var CSRF_TOKEN = "{{ csrf_token }}";
-            var loginForm = {
-                username: ko.observable(''),
-                password: ko.observable(''),
-                loader: ko.observable(false),
-                errorMessage: ko.observable(''),
-                submit: function () {
-                    loginForm.loader(true);
-                    var postData = {
-                        username: loginForm.username(),
-                        password: loginForm.password(),
-                        csrfmiddlewaretoken: CSRF_TOKEN,
-                    };
-                    $.post("/accounts/login/", postData, function(response) {
-                        response = JSON.parse(response);
-                        if (response.success) {
-                            loginForm.errorMessage('');
-                            // Redirect to application
-                            window.location = window.location.origin + '/';
-                        } else {
-                            loginForm.errorMessage(response.error);
-                            loginForm.loader(false);
-                        }
-                    }).fail(function() {
-                        loginForm.errorMessage('Error occured.');
-                        loginForm.loader(false);
-                    })
-                }
-            };
-
-            $(document).ready(function() {
-                ko.applyBindings(loginForm);
-            });
         </script>
+        <script src="/static/common/lib/jquery-1.11.0.js"></script>
+        <script src="/static/common/lib/knockout-3.1.0.js"></script>
+        <script src="/static/platform/js/login.js"></script>
     </head>
     <body>
         <div id="loader" data-bind="visible: loader"></div>

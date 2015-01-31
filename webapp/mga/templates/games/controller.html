@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <head>
+        <link rel="stylesheet" type="text/css" href="/static/platform/css/controller.css" />
         <script type="text/javascript">
             var CSRF_TOKEN = "{{ csrf_token }}";
             var USER = { "id": "{{request.user.username}}", "name": "{{request.user.first_name}}" };
@@ -13,38 +16,6 @@
         <script src="/static/platform/js/socket-wrapper.js"></script>
         <script src="/static/platform/js/controller.js"></script>
     </head>
-    <style>
-        body {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-            border: none;
-        }
-        #loader {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(22, 22, 22, 22);
-        }
-        #code {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            vertical-align: center;
-            text-align: center;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
     <body>
         <div id="loader" data-bind="visible: isLoading">
         </div>
