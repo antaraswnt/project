@@ -2,7 +2,7 @@
 <html>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <head>
         <link rel="stylesheet" type="text/css" href="/static/platform/css/controller.css" />
         <script type="text/javascript">
@@ -23,7 +23,7 @@
             <form>
                 <input type="text" maxlength="3" data-bind="value: code" />
                 <input type="button" value="Connect" data-bind="click: register"/>
-                <p data-bind="visible: errorMessage().length != 0, text: errorMessage"></p>
+                <p data-bind="visible: errorMessage() && errorMessage().length != 0, text: errorMessage"></p>
             </form>
         </div>
         <iframe data-bind="visible: isRegistered(), attr: { src: url }" id="controllerframe"></iframe>

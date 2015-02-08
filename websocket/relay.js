@@ -81,8 +81,7 @@ io.on('connection', function (socket) {
     }
 
     console.log('Connect received from uuid ' + uuid + ' for connect code: ' + connectcode);
-    Relay.sendBroadCast(connectcode, {'type': MessageTypes.CLIENTCONNECT, 'from': 'platform', 'data': extra});
-
+    
     if (socket_map[connectcode] == undefined) {
         socket_map[connectcode] = {};
     }
@@ -90,6 +89,15 @@ io.on('connection', function (socket) {
     if (socket_map[connectcode][uuid] == undefined) {
         socket_map[connectcode][uuid] = {'socket' : socket, 'extra' : extra };
     }
+
+    var clientlist = {};
+    var map = socket_map[connectcode];
+    for (var key in map) {
+        if (socket === map[key].socket) continue;
+        clientlist[key] = map[key].extra;
+    }
+    Relay.sendMessage(socket, {'type': MessageTypes.CLIENTLIST, 'from': 'platform', 'data': clientlist});
+    Relay.sendBroadCast(connectcode, {'type': MessageTypes.CLIENTCONNECT, 'from': 'platform', 'data': extra});
 
     socket.on('ondata', function (data) {
         console.log('Get data request received');

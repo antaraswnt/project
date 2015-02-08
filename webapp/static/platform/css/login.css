@@ -1,8 +1,29 @@
-#loader {
-    position: absolute;
-    top: 0;
-    left: 0;
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+html, body {
     width: 100%;
     height: 100%;
-    background: rgba(22, 22, 22, 22);
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.center {
+    height: 100%;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    justify-content: center;
+}
+
+#loader {
+    background: rgba(38, 35, 36, 0.60);
 }

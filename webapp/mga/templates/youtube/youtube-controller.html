@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/games/css/youtube/youtube-controller.css" />
+        <script src="/static/common/lib/jquery-1.11.0.js"></script>
+        <script src="/static/common/lib/knockout-3.1.0.js"></script>
+        <script src="/static/api/controller-api.js"></script>
+        <script src="/static/games/js/youtube/youtube-controller.js"></script>
+    </head>
+    <body>
+        <div class="title-bar">
+            <a href="#" class="btn btn-default menu-button" role="button" data-bind="click: toggleControls"><span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a>
+        </div>
+        <div class="app-body">
+            <ul class="media-list list-group" data-bind="foreach: videos">
+                <li class="list-group-item">
+                    <div class="media">
+                        <div class="media-left">
+                            <img class="media-object" data-bind="attr: {src: thumbnail}">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading" data-bind="text: title"></h4>
+                            <p data-bind="text: description"></p>
+                            <a href="#" class="btn btn-default" data-bind="click: $parent.loadVideo"><span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="container-fluid media-control" data-bind="visible: selectedvideo() && showControls()">
+                <div class="media-panel panel panel-default" data-bind="if: selectedvideo()">
+                    <div class="panel-body">
+                        <div class="media">
+                            <div class="media-left">
+                                <img class="media-object" data-bind="attr: {src: selectedvideo().thumbnail}">
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading" data-bind="text: selectedvideo().title"></h4>
+                                <p data-bind="text: selectedvideo().description"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6 text-center">
+                        <div class="btn-group btn-group-lg" role="group">
+                            <a href="#" class="btn btn-default btn-lg" role="button" data-bind="click: backward"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span></a>
+                            <a href="#" class="btn btn-default btn-lg" role="button" data-bind="click: play, visible: !playing()"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a>
+                            <a href="#" class="btn btn-default btn-lg" role="button" data-bind="click: pause, visible: playing"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span></a>
+                            <a href="#" class="btn btn-default btn-lg" role="button" data-bind="click: stop"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></a>
+                            <a href="#" class="btn btn-default btn-lg" role="button" data-bind="click: forward"><span class="glyphicon glyphicon-forward" aria-hidden="true"></span></a>
+                        </div>
+                    </div>
+                    <div class="control-seperator col-xs-12 col-md-1"></div>
+                    <div class="col-xs-12 col-md-5 text-center">
+                        <div class="btn-group btn-group-lg" role="group">
+                            <a href="#" class="btn btn-default btn-lg" role="button" data-bind="click: increaseVolume"><span class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span></a>
+                            <a href="#" class="btn btn-default btn-lg" role="button" data-bind="click: decreaseVolume"><span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span></a>
+                            <a href="#" class="btn btn-default btn-lg" role="button" data-bind="click: togglemute"><span data-bind="visible: muted" class="glyphicon glyphicon-volume-off" aria-hidden="true"></span><span data-bind="visible: !muted()" class="glyphicon glyphicon-volume-up" aria-hidden="true"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

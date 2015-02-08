@@ -50,7 +50,8 @@ def register_device(request):
                 device.relay = Relay.objects.all()[0] # Assign a random relay
                 device.save()
 
-            game = Game.objects.get(slug='main')
+            game = Game.objects.get(slug='youtube')
+            # return HttpResponse(json.dumps({'success': False, 'error': 'Error occured.'}))
             return HttpResponse(json.dumps({'success': True, 'device': device.get_json(), 'game': game.get_json()}))
 
     return HttpResponse(json.dumps({'success': True}))

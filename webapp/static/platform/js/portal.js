@@ -42,7 +42,7 @@ var Portal = {
                 ViewModel.registerError(response.error);
             }
         }).fail(function() {
-            ViewModel.registerError('Cannot connect to server.');
+            ViewModel.registerError('Cannot connect to server. Please restart the display.');
         });
     },
 
@@ -169,7 +169,6 @@ var Portal = {
     _relayCallback: function(type, data) {
         if (type == 'connect') {
             Portal.ready = true;
-            Portal._updateClients();
             ViewModel.isLoading(false);
             ViewModel.url(Portal.game().display_url);
         } else if(type == 'disconnect') {
@@ -210,7 +209,7 @@ var ViewModel = {
     connectFailure: function() {
         ViewModel.isLoading(false);
         ViewModel.isRegistered(false);
-        ViewModel.errorMessage('Connection to relay failed.');
+        ViewModel.errorMessage('Connection to relay failed. Please restart the display.');
     }
 }
 

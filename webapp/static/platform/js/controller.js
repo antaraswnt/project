@@ -161,7 +161,6 @@ var Controller = {
     _relayCallback: function(type, data) {
         if (type == 'connect') {
             Controller.ready = true;
-            Controller._updateClients();
         } else if(type == 'disconnect') {
             Controller.ready = false;
             ViewModel.isLoading(true);

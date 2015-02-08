@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/games/css/youtube/youtube-display.css" />
+        <script src="https://www.youtube.com/player_api"></script>
+        <script src="/static/common/lib/jquery-1.11.0.js"></script>
+        <script src="/static/common/lib/knockout-3.1.0.js"></script>
+        <script src="/static/api/display-api.js"></script>
+        <script src="/static/games/js/youtube/youtube-display.js"></script>
+    </head>
+    <body>
+        <div class="embed-responsive embed-responsive-16by9" data-bind="visible: video()">
+            <div id="ytplayer"></div>
+        </div>
+    </body>
+</html>

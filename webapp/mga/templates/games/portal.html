@@ -2,7 +2,7 @@
 <html>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <head>
         <link rel="stylesheet" type="text/css" href="/static/platform/css/portal.css" />
         <script type="text/javascript">
@@ -17,12 +17,15 @@
     </head>
     <body>
         <div id="code-container">
-            <p data-bind="text: server"></p>
-            <p data-bind="text: code"></p>
+            <div class="code-element"><span class="ce-title">Connect to </span><span data-bind="text: server"></span></div>
+            <div class="code-element"><span class="ce-title"> with code </span><span data-bind="text: code"></span></div>
         </div>
-        <div id="loader" data-bind="visible: isLoading">
+        <div class="center" id="loader" data-bind="visible: isLoading">
+            <img src="/static/platform/img/loader.gif" />
         </div>
-        <p data-bind="visible: errorMessage().length != 0, text: errorMessage"></p>
+        <div class="center" id="error-container" data-bind="visible: errorMessage() && errorMessage().length != 0">
+            <span data-bind="text: errorMessage"></span>
+        </div>
         <iframe id='portalframe' data-bind="visible: isRegistered(), attr: { src: url }"></iframe>
     </body>
 </html>
