@@ -7,6 +7,8 @@ class Game(models.Model):
     display_url = models.URLField(max_length=200)
     control_url = models.URLField(max_length=200)
     is_active = models.BooleanField(default=False)
+    large_image_url = models.URLField(max_length=200,null=True,blank=True)
+    small_image_url = models.URLField(max_length=200,null=True,blank=True)
 
     def __unicode__(self):
         return u'%s' % (self.title)
@@ -17,5 +19,7 @@ class Game(models.Model):
             'slug' : self.slug,
             'display_url' : self.display_url,
             'controller_url' : self.control_url,
+            'large_image_url' : self.large_image_url,
+            'small_image_url' : self.small_image_url,
         }
         return json

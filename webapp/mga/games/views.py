@@ -46,3 +46,10 @@ def game_display(request, game_slug):
 def game_controller(request, game_slug):
     game_template = '%s/%s-controller.html' % (game_slug, game_slug)
     return render(request, game_template, {})
+
+def get_game_list(request):
+    games = Game.objects.all()
+    game_list = []
+    for game in games:
+        game_list.append(game.get_json())
+    return HttpResponse(json.dumps({'success': True, 'games': game_list}))
