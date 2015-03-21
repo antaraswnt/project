@@ -7,6 +7,9 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+from games.models import *
+from django.db.models import Q
+
 # Create your views here.
 @never_cache
 def portal(request):
@@ -47,9 +50,13 @@ def game_controller(request, game_slug):
     game_template = '%s/%s-controller.html' % (game_slug, game_slug)
     return render(request, game_template, {})
 
-def get_game_list(request):
-    games = Game.objects.all()
-    game_list = []
-    for game in games:
-        game_list.append(game.get_json())
-    return HttpResponse(json.dumps({'success': True, 'games': game_list}))
+def get_game_list(request, game_slug=None):
+    if game_slug:
+        game = Game.objects.get(slug=game_slug)
+        return HttpResponse(json.dumps({'success': True, 'game': game.get_json()}))
+    else:
+        games = Game.objects.filter(~Q(slug='main'))
+        game_list = []
+        for game in games:
+            game_list.append(game.get_json())
+        return HttpResponse(json.dumps({'success': True, 'games': game_list}))

@@ -1,17 +1,30 @@
 $(document).ready(function() {
-    Display.initialize();
-    Display.registerForClientConnect(function(data) {
-        ChatModel.messages.push(data.name + ' connected');
-    });
-    Display.registerForClientDisconnect(function(data) {
-        ChatModel.messages.push(data.name + ' disconnected');
-    });
-    Display.registerForCustomMessage(function(data, client) {
-        ChatModel.messages.push(client + ' says: ' + data);
+    $('.carousel').carousel({
+        interval: 5000,
+        pause: "",
     });
 
-    var ChatModel = {
-        messages: ko.observableArray([])
+    Display.initialize();
+    Display.registerForClientConnect(function(data) {
+        
+    });
+    Display.registerForClientDisconnect(function(data) {
+
+    });
+    Display.registerForCustomMessage(function(data, client) {
+        
+    });
+
+    var MainViewModel = {
+        games: ko.observableArray([])
     }
-    ko.applyBindings(ChatModel);
+
+    $.get('/api/games/', {}, function (response) {
+        response = JSON.parse(response);
+        $.each(response.games, function(i, item) {
+            MainViewModel.games.push(item);
+        });
+    });
+
+    ko.applyBindings(MainViewModel);
 });

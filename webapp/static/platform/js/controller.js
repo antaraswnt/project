@@ -31,6 +31,7 @@ var Controller = {
                 Controller.relay = device.relay.host + ':' + device.relay.port;
                 Controller.uuid = device.uuid;
                 Cookies.set('uuid', Controller.uuid);
+                Cookies.set('code', Controller.code);
                 Controller.initialize();
                 ViewModel.registerSuccess();
             } else {
@@ -185,6 +186,19 @@ var ViewModel = {
         Controller.register(ViewModel.code());
     },
 
+    logout: function() {
+        window.location.href = '/accounts/logout';
+    },
+
+    disconnect: function() {
+        Cookies.set('code',undefined);
+        window.location.reload();
+    },
+
+    loadMain: function() {
+        ViewModel.url('/games/main/controller/');
+    },
+
     registerSuccess: function() {
         ViewModel.isRegistered(true);
     },
@@ -202,6 +216,12 @@ var ViewModel = {
 }
 
 $(document).ready(function() {
+
+    var code = Cookies.get('code');
+    if (code) {
+        ViewModel.code(code);
+        ViewModel.register();
+    }
 
     if (window.addEventListener) {
         addEventListener("message", Controller.processMessageFromFrontend, false);

@@ -46,6 +46,15 @@ var Portal = {
         });
     },
 
+    loadGame: function (slug) {
+        $.post('/api/games/' + slug +'/', {'csrfmiddlewaretoken': CSRF_TOKEN}, function(response){
+            response = JSON.parse(response);
+            if (response.success) {
+                Portal.game(response.game);
+            }
+        });
+    },
+
     initialize: function() {
         Portal.socket = new SocketWrapper(Portal.uuid, Portal.relay, Portal.code, Portal.extra);
         Portal.socket.initialize(Portal._relayCallback);
@@ -91,6 +100,12 @@ var Portal = {
     },
 
     _raiseClientMessageEvent: function(data) {
+        try {
+            if (data.data.type == "loadgame") {
+                Portal.loadGame(data.data.game);
+            }
+        } catch (e) {
+        }
         var clientid = Portal.clients[data.from].information.id;
         Portal._sendMessageToFrontend({'type': 'message', 'data': data.data, 'from': clientid});
     },
@@ -183,7 +198,7 @@ var Portal = {
 };
 
 var ViewModel = {
-    server: ko.observable('192.168.2.101:8000'),
+    server: ko.observable('192.168.2.102:8000'),
     code: ko.observable(''),
     isRegistered: ko.observable(false),
     isLoading: ko.observable(false),

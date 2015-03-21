@@ -143,7 +143,9 @@ $(document).ready(function() {
                 player.loadVideo(data.video);
                 break;
             case "getstate":
-                Display.sendMessageToClient({"type": "state", "state": player.getState()}, client);
+                if (player) {
+                    Display.sendMessageToClient({"type": "state", "state": player.getState()}, client);
+                }
                 break;
         }
     });

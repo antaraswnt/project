@@ -26,6 +26,14 @@ var Client = {
     registerForClientDisconnect: function(f) {
         Client.callbacks.clientDisconnect = f;
     },
+    loadGame: function(slug) {
+        var msg = {
+            'type': 'message',
+            'data': {'type': 'loadgame', 'game': slug},
+            'client': 'portal',
+        }
+        Client._sendData(msg);
+    },
     sendMessageToPortal: function(data) {
         var msg = {
             'type': 'message',

@@ -1,63 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <script src="/static/common/lib/jquery-1.11.0.js"></script>
         <script src="/static/common/lib/knockout-3.1.0.js"></script>
         <script src="/static/api/controller-api.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                Client.initialize();
-                Client.registerForClientConnect(function(data) {
-                    ChatModel.messages.push(data.name + ' connected');
-                });
-                Client.registerForClientDisconnect(function(data) {
-                    ChatModel.messages.push(data.name + ' disconnected');
-                });
-                Client.registerForCustomMessage(function(data, client) {
-                    ChatModel.messages.push(client + ' says: ' + data);
-                });
-                Client.registerForClientListChange(function() {
-                    ChatModel.populateClients();
-                });
-                var ChatModel = {
-                    messages: ko.observableArray([]),
-                    message: ko.observable(''),
-                    clients: ko.observableArray([]),
-                    selectedClient: ko.observable(undefined),
-                    populateClients: function () {
-                        var clients = Client.getClients();
-                        var clientlist = [];
-                        for (key in clients) {
-                            clientlist.push(clients[key]);
-                        }
-                        clientlist.push({'id': 'all', 'name': 'All'});
-                        ChatModel.clients(clientlist);
-                    },
-                    sendMessage: function () {
-                        Client.sendMessageToClient(ChatModel.message(), ChatModel.selectedClient()); 
-                    }
-                }
-                ko.applyBindings(ChatModel);
-            });
-        </script>
+        <script src="/static/games/js/main/main-controller.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/games/css/main/main-controller.css" />
     </head>
-    <style>
-        body {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-        }
-    </style>
     <body>
-        <div>
-            <select data-bind="options: clients, optionsText: 'name', optionsValue: 'id', value: selectedClient"></select>
-            <input type="text" data-bind="value: message"/>
-            <input type="button" data-bind="click: sendMessage" value="Send"/>
-        </div>
-
-        <div data-bind="foreach: messages">
-            <p data-bind="text: $data"></p>
-        </div>
+        <ul class="list-group" data-bind="foreach: games">
+            <li class="list-group-item" data-bind="text: title, click: $parent.loadGame"></li>
+        </ul>
     </body>
 </html>

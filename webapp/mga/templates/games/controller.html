@@ -4,6 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="/static/platform/css/controller.css" />
         <script type="text/javascript">
             var CSRF_TOKEN = "{{ csrf_token }}";
@@ -17,14 +18,25 @@
         <script src="/static/platform/js/controller.js"></script>
     </head>
     <body>
-        <div id="loader" data-bind="visible: isLoading">
-        </div>
-        <div id="code" data-bind="visible: !isRegistered()">
+        <div class="center" id="code" data-bind="visible: !isRegistered()">
             <form>
-                <input type="text" maxlength="3" data-bind="value: code" />
-                <input type="button" value="Connect" data-bind="click: register"/>
+                <div class="form-group">
+                    <input class="form-control" id="codetext" type="text" maxlength="3" data-bind="value: code" />
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="button" value="Connect" data-bind="click: register"/>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="button" value="Logout" data-bind="click: logout"/>
+                </div>
                 <p data-bind="visible: errorMessage() && errorMessage().length != 0, text: errorMessage"></p>
             </form>
+        </div>
+        <div id="loader" data-bind="visible: isLoading">
+        </div>
+        <div class="title-bar">
+            <a href="#" class="btn btn-default menu-button" role="button" data-bind="click: loadMain"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
+            <a href="#" class="btn btn-default menu-button menu-right" role="button" data-bind="click: disconnect"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
         </div>
         <iframe data-bind="visible: isRegistered(), attr: { src: url }" id="controllerframe"></iframe>
     </body>
