@@ -1,0 +1,15 @@
+.block {
+    position: absolute;
+}
+
+.type_1 {
+    background-color: #FF0000;
+}
+
+.type_2 {
+    background-color: black;
+}
+
+.type_3 {
+    background-color: green;
+}

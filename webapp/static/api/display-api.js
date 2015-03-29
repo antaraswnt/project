@@ -62,7 +62,7 @@ var Display = {
                 }
                 break;
             case 'listchange':
-                clients = data.data;
+                Display.clients = data.data;
                 if (typeof(Display.callbacks.clientListChange) == 'function') {
                     Display.callbacks.clientListChange();
                 }
