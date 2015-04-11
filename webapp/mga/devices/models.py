@@ -18,7 +18,7 @@ class Device(models.Model):
 
     uuid = UUIDField()
     relay = models.ForeignKey(Relay)
-    device_type = models.CharField(max_length=3, choices=DEVICE_TYPES, default='Controller')
+    device_type = models.CharField(max_length=3, choices=DEVICE_TYPES, default='CON')
     device_code = models.CharField(max_length=3)
 
     def __unicode__(self):
