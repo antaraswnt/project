@@ -15,7 +15,7 @@ def register_device(request):
             if not device_code:
                 return HttpResponse(json.dumps({'success': False, 'error': 'Invalid code.'}))
 
-            devices = Device.objects.filter(device_code=device_code, device_type='Display')
+            devices = Device.objects.filter(device_code=device_code, device_type='DSP')
             if devices.count() == 0:
                 return HttpResponse(json.dumps({'success': False, 'error': 'No display for the code.'}))
             
@@ -45,7 +45,7 @@ def register_device(request):
 
             if create_device:
                 device = Device()
-                device.device_type = 'Display'
+                device.device_type = 'DSP'
                 device.device_code = 'abc' # Assign a random code
                 device.relay = Relay.objects.all()[0] # Assign a random relay
                 device.save()
