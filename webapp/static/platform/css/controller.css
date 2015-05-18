@@ -11,7 +11,7 @@ body {
     height: 50px;
     padding: 0;
     background-color: #396DCC;
-    z-index: 1;
+    z-index: 5;
 }
 iframe {
     position: absolute;

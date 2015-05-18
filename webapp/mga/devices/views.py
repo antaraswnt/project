@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from games.models import *
 from models import *
 import json
+import random
 
 # Create your views here.
 def register_device(request):
@@ -46,7 +47,8 @@ def register_device(request):
             if create_device:
                 device = Device()
                 device.device_type = 'DSP'
-                device.device_code = 'abc' # Assign a random code
+                code_letters = 'abcdefghijklmnopqrstuvwxyz'
+                device.device_code = random.choice(code_letters) + random.choice(code_letters) + random.choice(code_letters) # Assign a random code
                 device.relay = Relay.objects.all()[0] # Assign a random relay
                 device.save()
 
