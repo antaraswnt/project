@@ -1,13 +1,34 @@
+body {
+    background-color: #000000;
+}
+
+#playarea {
+    display: block;
+    border-color: #0F0F0F;
+    border-style: solid;
+    width: 1200px;
+    height: 700px;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    background-color: #000000;
+}
+
 .block {
     position: absolute;
 }
 
-.type_1 {
+.fruit {
     background-color: #FF0000;
 }
 
+.type_1 {
+    background-color: #FFFF00;
+}
+
 .type_2 {
-    background-color: black;
+    background-color: green;
 }
 
 .type_3 {
