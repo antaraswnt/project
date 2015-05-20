@@ -166,6 +166,7 @@ var Field = {
     clients: {},
     gameStarted: ko.observable(false),
     fruit: ko.observable(null),
+    countDown: ko.observable(10),
 
     setOccupied: function (x,y,value) {
         Field.blocks[x * GRIDSIZE_VERTICAL + y] = value;
@@ -217,15 +218,8 @@ var Field = {
         return Field.snakes.length;
     },
 
-    initialize: function () {
-        Field.setOccupied(10, 8, 1);
-        Field.setOccupied(10, 9, 1);
-        Field.setOccupied(10, 10, 1);
-        Field.setOccupied(10, 11, 1);
-        Field.setOccupied(10, 12, 1);
-        Field.setOccupied(10, 13, 1);
-        Field.setOccupied(10, 14, 1);
-        Field.setOccupied(10, 15, 1);
+    startGame: function () {
+        // Field.setOccupied(10, 8, 1);
 
         Field.fruit.subscribe(function (value) {
             if (value) {
@@ -241,12 +235,31 @@ var Field = {
                 Field.snakes[index].move();
             }
             Field.setFruit();
-        }, 150);
+        }, 200);
+    },
+
+    initialize: function() {
+        Field.countDown(10);
+        joinTask = setInterval(function() {
+            Field.countDown(Field.countDown()-1);
+            if (Field.countDown() == 0) {
+                if (Field.getClientCount() > 0) {
+                    Field.startGame();
+                } else {
+                    Field.initialize();
+                }
+                clearTimeout(joinTask);
+            }
+        }, 1000);
     }
 }
 
 $(document).ready(function() {
     Display.initialize();
+
+    Field.initialize();
+
+    ko.applyBindings(Field);
     
     Display.registerForClientConnect(function(data) {
         
@@ -259,11 +272,10 @@ $(document).ready(function() {
     Display.registerForCustomMessage(function(data, client) {
         switch(data.type) {
             case "joingame":
-                if (Field.getClientCount() < 2) {
+                if (!Field.gameStarted()) {
                     if (Field.clients[client] == undefined) {
                         Field.addSnake(client);
                     }
-                    if (Field.getClientCount() == 1) Field.initialize();
                 }
                 break;
             case "left":

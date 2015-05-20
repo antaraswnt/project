@@ -12,6 +12,7 @@
         <script src="/static/games/js/snake/snake-display.js"></script>
     </head>
     <body>
+        <div id="countdown" data-bind="visible: countDown() > 0">Game starts in <span data-bind="text: countDown"></span> seconds.</div>
         <div id="playarea"></div>
     </body>
 </html>
