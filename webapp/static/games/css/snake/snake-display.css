@@ -28,11 +28,31 @@ body {
 }
 
 .type_2 {
-    background-color: green;
+    background-color: #FF00FF;
 }
 
 .type_3 {
     background-color: blue;
+}
+
+.type_4 {
+    background-color: aqua;
+}
+
+.type_5 {
+    background-color: green;
+}
+
+.type_6 {
+    background-color: yellow;
+}
+
+.type_7 {
+    background-color: #4B0082;
+}
+
+.type_8 {
+    background-color: orange;
 }
 
 #countdown {
