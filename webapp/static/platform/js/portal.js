@@ -198,7 +198,7 @@ var Portal = {
 };
 
 var ViewModel = {
-    server: ko.observable('192.168.2.102:8000'),
+    server: ko.observable('server.mga.lan'),
     code: ko.observable(''),
     isRegistered: ko.observable(false),
     isLoading: ko.observable(false),
